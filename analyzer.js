@@ -3,10 +3,8 @@ import path from "path";
 import { execSync } from "child_process";
 import { buildPrompt } from "./prompt.js";
 
-// 🔹 Ignore unnecessary folders
 const ignoredFolders = ["node_modules", ".git", "dist", "build"];
 
-// 🔹 Recursively get all files
 function getAllFiles(dir) {
   let results = [];
   const list = fs.readdirSync(dir);
@@ -15,7 +13,6 @@ function getAllFiles(dir) {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
 
-    // ❌ Skip unwanted folders
     if (ignoredFolders.some(folder => fullPath.includes(folder))) {
       return;
     }
@@ -37,15 +34,13 @@ export function generateReadme() {
 
   files.forEach(file => {
     try {
-      // ✅ Try reading only text files
+
       const content = fs.readFileSync(file, "utf-8");
 
-      // 🔥 Limit size (important for AI)
       const trimmedContent = content.slice(0, 2000);
 
       projectData += `\nFILE: ${file}\n${trimmedContent}\n`;
     } catch (err) {
-      // ❌ Skip binary/unreadable files
     }
   });
 
@@ -53,10 +48,8 @@ export function generateReadme() {
 
   console.log("Generating README using Gemini...");
 
-  // ✅ Write prompt to temp file
   fs.writeFileSync("prompt.txt", prompt);
 
-  // ✅ Pipe into Gemini
   const result = execSync(`type prompt.txt | gemini`).toString();
 
   fs.writeFileSync("README.md", result);
