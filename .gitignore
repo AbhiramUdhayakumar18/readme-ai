@@ -1,0 +1,5 @@
+node_modules/
+prompt.txt
+README.md
+.env
+*.log
